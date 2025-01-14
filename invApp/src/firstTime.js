@@ -1,19 +1,23 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, TextInput } from "react-native";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 
-const image = require('../assets/fruit2.png');
+const image = require("../assets/fruit2.png");
 
 const First = ({ navigation }) => {
-  // Move useState inside the component
   const [username, setUsername] = useState("");
+  const [household, setHousehold] = useState("");
+  const [step, setStep] = useState(1);
   const user = auth.currentUser;
+  const formatName = (name) => (
+    <Text style={styles.usernameText}>{name}</Text>
+  ); 
 
   const logoutUser = async () => {
     try {
       await signOut(auth);
-      navigation.navigate('Login');  // Navigate to the login screen after logout
+      navigation.navigate("Login"); 
     } catch (error) {
       console.log("Error signing out:", error);
     }
@@ -21,31 +25,38 @@ const First = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* ImageBackground should wrap other components */}
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        
         <Text style={styles.welcomeText}>
-          Welcome <Text style={styles.emailText}>{user?.email}</Text>, you are logged in!
-        </Text>
-
-        <Text style={styles.welcomeText}>
-          How would you like us to call you?
+          {step === 1
+            ? "How would you like us to call you?"
+            : `Hello ${username}! Make your first household to begin:`}
         </Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder={step === 1 ? "Enter your name" : "Enter household name"}
           placeholderTextColor="white"
           autoCapitalize="none"
-          value={username}
-          onChangeText={setUsername}
+          value={step === 1 ? username : household}
+          onChangeText={step === 1 ? setUsername : setHousehold}
         />
 
-        {/* Logout button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={logoutUser}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={() => {
+            if (step === 1 && username.trim()) {
+              setStep(2);
+            } else if ((step === 2) && household.trim()){
+              navigation.navigate("Hub"); // Navigate to the next screen
+            } else {
+              alert("Please fill out the required field");
+            }
+          }}
+        >
+          <Text style={styles.logoutButtonText}>
+            {"Next"}
+          </Text>
         </TouchableOpacity>
-
       </ImageBackground>
     </View>
   );
@@ -57,41 +68,58 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   welcomeText: {
     fontSize: 20,
-    top: -220, 
-    color: 'white', 
-    textAlign: 'center',
+    top: -90,
+    color: "white",
+    textAlign: "center",
     marginBottom: 20,
   },
   emailText: {
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
-  logoutButton: { 
-    backgroundColor: 'pink',
-    marginTop: 20,
+  logoutButton: {
+    backgroundColor: "pink",
+    top: -60,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   logoutButtonText: {
-    color: 'black',
+    color: "black",
     fontSize: 18,
-    fontStyle: 'italic',
+    fontStyle: "italic",
+  },
+  usernameText: {
+    color: "pink", 
+    fontSize: 20,
+    top: -90,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  nextButton: {
+    backgroundColor: "pink",
+    top: 300,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: "center",
   },
   input: {
+    width: "90%",
+    alignSelf: "center",
     height: 50,
-    color: 'white', 
-    borderColor: 'white',
+    color: "white",
+    borderColor: "white",
     borderWidth: 3,
     borderRadius: 5,
     paddingHorizontal: 15,
     marginBottom: 15,
-    top: -50, 
+    top: -70,
     fontSize: 20,
   },
 });

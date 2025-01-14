@@ -5,7 +5,6 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const image = require('../assets/fruit3.png');
 
-// Replace useNavigate with navigation provided by react-navigation
 const SignupScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,9 +16,22 @@ const SignupScreen = ({ navigation }) => {
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
                 navigation.navigate("First");  // Navigate back to login after signup
-            } catch {
-                setNotice("Sorry, something went wrong. Please try again.");
-            }     
+            } catch (error) {
+              switch (error.code) {
+                case "auth/email-already-in-use":
+                  setNotice("This email is already in use. Please try a different email.");
+                  break;
+                case "auth/invalid-email":
+                  setNotice("Invalid email address. Please check and try again.");
+                  break;
+                case "auth/weak-password":
+                  setNotice("Password must be at least 6 characters long.");
+                  break;
+                default:
+                  setNotice("Something went wrong. Please try again later.");
+              }
+            }
+              
         } else {
             setNotice("Passwords don't match. Please try again.");
         }
@@ -28,12 +40,16 @@ const SignupScreen = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <Text style={styles.title}>SignUp</Text>
-        {notice !== "" && (
-          <View style={styles.alertContainer}>
-            <Text style={styles.alertText}>{notice}</Text>
+          <View style = {styles.titleContainer}>
+            <Text style={styles.title}>SignUp</Text>
+           {notice !== "" && (
+            <View style={styles.alertContainer}>
+              <Text style={styles.alertText}>{notice}</Text>
+            </View>
+          )}
           </View>
-        )}
+        
+       
 
         <TextInput
           style={styles.input}
@@ -70,9 +86,6 @@ const SignupScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.submitButtonContainer} onPress={signupWithUsernameAndPassword}>
           <Text style={styles.submitButton}>Enter</Text>
         </TouchableOpacity>
-
-   
-
 
         </View>
         </ImageBackground>
@@ -120,15 +133,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 10,
   },
+  titleContainer: {
+    flexDirection: "row", // Align "SignUp" and the alert horizontally
+    alignItems: "center", // Align alert vertically with "SignUp"
+    justifyContent: "left", // Center the entire title row
+    marginBottom: 20, // Space between title and input fields
+    
+  },
   alertContainer: {
-    marginBottom: 10,
-    backgroundColor: '#f8d7da',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: "pink",
+    padding: 5,
+    borderRadius: 10,
+    marginTop: -40, 
+    alignItems: "left", 
+    marginLeft: -155, 
+     // Space between "SignUp" and alert box
   },
   alertText: {
-    color: '#842029',
-    textAlign: 'center',
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
   },
   loginRedirect: {
     marginTop: -50,

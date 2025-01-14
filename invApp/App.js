@@ -6,7 +6,9 @@ import HomeScreen from './src/homescreen';  // Assuming you also have HomeScreen
 import LoginScreen from './src/loginscreen';  // Importing LoginScreen from the new file
 import SignupScreen from './src/signupscreen';  // Importing SignupScreen from the new file
 import ProfileScreen from './src/profile'; 
-import First from './src/firstTime'; 
+import FirstScreen from './src/firstTime'; 
+import HubScreen from './src/hub'; 
+//import HubScreen from './src/hub'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +19,8 @@ function MyStack() {
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
       <Stack.Screen name="Signup" component={SignupScreen} options={{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
-      <Stack.Screen name = "First" component = {First} options = {{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
+      <Stack.Screen name = "First" component = {FirstScreen} options = {{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
+      <Stack.Screen name = "Hub" component = {HubScreen} options = {{ headerTransparent: true, headerTintColor: 'white', headerTitle: '' }} />
    </Stack.Navigator>
   );
 }

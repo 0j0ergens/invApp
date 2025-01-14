@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
   const loginWithUsernameAndPassword = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate('Profile');  // Make sure 'Profile' matches the route name in App.js
+      navigation.navigate('Hub');  // Make sure 'Profile' matches the route name in App.js
     } catch {
       setNotice("You entered a wrong username or password.");
     }
@@ -93,14 +93,14 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   submitButtonContainer: {
-    backgroundColor: 'white',
+    backgroundColor: 'pink',
     borderRadius: 30,
     width: '30%',
     right: -140,
     marginHorizontal: '30%',
   },
   submitButton: {
-    color: '#332410',
+    color: '#313605',
     fontSize: 30,
     left: 7,
     top: 0,
